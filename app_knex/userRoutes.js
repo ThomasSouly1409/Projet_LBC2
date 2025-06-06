@@ -26,9 +26,9 @@ router.get('/users/:id', async (req, res) => {
 
 // Créer un nouvel utilisateur
 router.post('/users', async (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, password } = req.body;
   try {
-    await userModel.createUser(name, email);
+    await userModel.createUser(name, email, password);
     res.status(201).json({ message: 'Utilisateur créé avec succès' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -38,9 +38,9 @@ router.post('/users', async (req, res) => {
 // Mettre à jour un utilisateur existant
 router.put('/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, email } = req.body;
+  const { name, email, password } = req.body;
   try {
-    await userModel.updateUser(id, name, email);
+    await userModel.updateUser(id, name, email, password);
     res.json({ message: 'Utilisateur mis à jour avec succès' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -53,6 +53,18 @@ router.delete('/users/:id', async (req, res) => {
   try {
     await userModel.deleteUser(id);
     res.json({ message: 'Utilisateur supprimé avec succès' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Sign Up (création de compte, avec email/password/name donc create user)
+router.post('/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+  const passwordEncrypted = crypto.createHash('md5').update(password).digest('hex');
+  try {
+    await userModel.createUser(name, email, passwordEncrypted);
+    res.status(201).json({ message: 'Utilisateur créé avec succès' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

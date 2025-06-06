@@ -2,8 +2,8 @@
 const knex = require('knex')(require('./knexfile')['development']);
 
 // Create
-async function createUser(name, email) {
-  return await knex('users').insert({ name, email });
+async function createUser(name, email, password) {
+  return await knex('users').insert({ name, email, password });
 }
 
 // Read
