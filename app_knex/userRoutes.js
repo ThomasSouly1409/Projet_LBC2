@@ -60,13 +60,44 @@ router.delete('/users/:id', async (req, res) => {
 
 // Sign Up (création de compte, avec email/password/name donc create user)
 router.post('/signup', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, created_at } = req.body;
   const passwordEncrypted = crypto.createHash('md5').update(password).digest('hex');
   try {
-    await userModel.createUser(name, email, passwordEncrypted);
+    await userModel.createUser(name, email, passwordEncrypted, created_at);
     res.status(201).json({ message: 'Utilisateur créé avec succès' });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Sign In (connexion)
+router.post('/signin', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await userModel.getUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
+    const passwordEncrypted = crypto.createHash('md5').update(password).digest('hex');
+    if (user.password !== passwordEncrypted) {
+      return res.status(401).json({ error: 'Mot de passe incorrect' });
+    }
+    const token = uuidv4();
+    await tokenModel.createToken(token, email);
+    res.json({ message: 'Connexion réussie', token});
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Log out (déconnexion)
+router.post('/logout', async (req, res) => {
+  const { token } = req.body;
+  try{
+    await tokenModel.deleteToken(token);
+    res.json({ message: 'Déconnexion réussie'});
+  } catch (error) {
+    res.status(500).json({ error: error.message});
   }
 });
 
