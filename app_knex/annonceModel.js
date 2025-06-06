@@ -2,33 +2,33 @@
 const knex = require('knex')(require('./knexfile')['development']);
 
 // Create
-async function createUser(name, email) {
-  return await knex('users').insert({ name, email });
+async function createAnnonce(title, body, user_id, status, created_at) {
+  return await knex('annonces').insert({ title, body, user_id, status, created_at });
 }
 
 // Read
-async function getAllUsers() {
-  return await knex.select().from('users');
+async function getAllAnnonces() {
+  return await knex.select().from('annonces');
 }
 
-async function getUserById(id) {
-  return await knex('users').where({ id }).first();
+async function getAnnonceById(id) {
+  return await knex('annonces').where({ id }).first();
 }
 
 // Update
-async function updateUser(id, newName, newEmail) {
-  return await knex('users').where({ id }).update({ name: newName, email: newEmail });
+async function updateAnnonce(id, newTitle, newBody, newUser_id, newStatus, newCreated_at) {
+  return await knex('annonces').where({ id }).update({ title: newTitle, body: newBody, user_id: newUser_id, status: newStatus, created_at: newCreated_at });
 }
 
 // Delete
-async function deleteUser(id) {
-  return await knex('users').where({ id }).del();
+async function deleteAnnonce(id) {
+  return await knex('annonces').where({ id }).del();
 }
 
 module.exports = {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser
+  createAnnonce,
+  getAllAnnonces,
+  getAnnonceById,
+  updateAnnonce,
+  deleteAnnonce
 };
