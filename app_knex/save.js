@@ -5,6 +5,7 @@ const db = require('./userModel');
 async function main() {
   // Create
   await db.createUser('John Doe', 'john@example.com');
+  
 
   // Read
   const allUsers = await db.getAllUsers();
