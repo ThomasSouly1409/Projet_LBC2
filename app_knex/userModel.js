@@ -2,13 +2,18 @@
 const knex = require('knex')(require('./knexfile')['development']);
 
 // Create
-async function createUser(name, email, password) {
-  return await knex('users').insert({ name, email, password });
+async function createUser(name, email, password, created_at = new Date()) {
+  return await knex('users').insert({ name, email, password, created_at });
 }
 
 // Read
 async function getAllUsers() {
   return await knex.select().from('users');
+}
+
+async function getUserByEmail(email) {
+  const user = await knex('users').where({ email }).first();
+  return user;
 }
 
 async function getUserById(id) {
@@ -30,7 +35,8 @@ module.exports = {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserByEmail
 };
 
 // npm install knex sqlite3

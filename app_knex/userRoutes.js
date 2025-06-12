@@ -2,6 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const userModel = require('./userModel');
+const crypto = require('crypto');
+const { v4: uuidv4 } = require('uuid');
+const tokenModel = require('./tokenModel')
 
 // Récupérer tous les utilisateurs
 router.get('/users', async (req, res) => {

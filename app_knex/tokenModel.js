@@ -3,7 +3,7 @@ const knex = require('knex')(require('./knexfile')['development']);
 
 // Create
 async function createToken(email, token) {
-  return await knex('token').insert({ email, token });
+  return await knex('tokens').insert({ email, token, created_at: new Date() });
 }
 
 // Read
@@ -12,17 +12,17 @@ async function getAllTokens() {
 }
 
 async function getTokenById(id) {
-  return await knex('token').where({ token }).first();
+  return await knex('tokens').where({ token: id }).first();
 }
 
 // Update
 async function updateToken(id, newEmail, newToken) {
-  return await knex('token').where({ token }).update({ email: newEmail, token: newToken });
+  return await knex('tokens').where({ token: id }).update({ email: newEmail, token: newToken });
 }
 
 // Delete
 async function deleteToken(token) {
-  return await knex('token').where({ token }).del();
+  return await knex('tokens').where({ token }).del();
 }
 
 module.exports = {

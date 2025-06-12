@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
   res.send('Bienvenue sur la page d\'accueil !')
 })
 
-const PORT = 80;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Le serveur Express écoute sur le port ${PORT}`);
 });

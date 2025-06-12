@@ -7,6 +7,7 @@ async function createTable() {
       await knex.schema.createTable('users', table => {
         table.increments('id').primary();
         table.string('name');
+        table.string('email');
         table.string('password');
         table.timestamp('created_at')
       });
@@ -41,6 +42,19 @@ async function createTable() {
     } else {
       console.log('La table "propositions" existe déjà.');
     }
+    const exists_tokens = await knex.schema.hasTable('tokens');
+    if (!exists_tokens) {
+      await knex.schema.createTable('tokens', table => {
+        table.increments('id').primary();
+        table.string('token');
+        table.string('email');
+        table.timestamp('created_at');
+      });
+      console.log('La table "tokens" a été créée avec succès.');
+    } else {
+      console.log('La table "tokens" existe déjà.');
+    }
+
   } catch (error) {
     console.error('Erreur lors de la création de la table :', error);
   } finally {
