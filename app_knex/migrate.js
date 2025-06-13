@@ -48,6 +48,7 @@ async function createTable() {
         table.increments('id').primary();
         table.string('token');
         table.string('email');
+        table.integer('user_id');
         table.timestamp('created_at');
       });
       console.log('La table "tokens" a été créée avec succès.');
