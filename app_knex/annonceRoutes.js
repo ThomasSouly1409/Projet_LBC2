@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const annonceModel = require('./annonceModel');
+const tokenModel = require('./tokenModel')
 
 // Récupérer toutes les annonces
 router.get('/annonces', async (req, res) => {
@@ -26,7 +27,19 @@ router.get('/annonces/:id', async (req, res) => {
 
 // Créer une nouvelle annonce
 router.post('/annonces', async (req, res) => {
-  const { title, body, user_id, status, created_at } = req.body;
+  if (!req.headers.authorization) {
+    return res.status(403).json({ error: "Token obligatoire" });
+  }
+
+  const token = req.headers.authorization;
+  const tokenDb = await tokenModel.getTokenById(token)
+  if (!tokenDb) {
+    return res.status(403).json({ error: "Token invalide" });
+  }
+
+  const user_id = tokenDb.user_id
+  const created_at = new Date()
+  const { title, body, status } = req.body;
   try {
     await annonceModel.createAnnonce(title, body, user_id, status, created_at);
     res.status(201).json({ message: 'Annonce créé avec succès' });
@@ -37,8 +50,9 @@ router.post('/annonces', async (req, res) => {
 
 // Mettre à jour une annonce existante
 router.put('/annonces/:id', async (req, res) => {
+
   const { id } = req.params;
-  const { title, body, user_id, status, created_at } = req.body;
+  const { title, body, status, created_at } = req.body;
   try {
     await annonceModel.updateAnnonce(id, title, body, user_id, status, created_at);
     res.json({ message: 'Annonce mise à jour avec succès' });

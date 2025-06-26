@@ -2,8 +2,9 @@
 const knex = require('knex')(require('./knexfile')['development']);
 
 // Create
-async function createToken(email, token) {
-  return await knex('tokens').insert({ email, token, created_at: new Date() });
+async function createToken(token, user_id, email) {
+  console.log({ email, token, user_id, created_at: new Date() })
+  return await knex('tokens').insert({ email, token, user_id, created_at: new Date() });
 }
 
 // Read

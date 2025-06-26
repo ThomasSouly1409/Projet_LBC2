@@ -86,7 +86,7 @@ router.post('/signin', async (req, res) => {
       return res.status(401).json({ error: 'Mot de passe incorrect' });
     }
     const token = uuidv4();
-    await tokenModel.createToken(token, email);
+    await tokenModel.createToken(token, user.id, email);
     res.json({ message: 'Connexion réussie', token});
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -94,7 +94,7 @@ router.post('/signin', async (req, res) => {
 });
 
 // Log out (déconnexion)
-router.post('/logout', async (req, res) => {
+router.get('/logout', async (req, res) => {
   const { token } = req.body;
   try{
     await tokenModel.deleteToken(token);
