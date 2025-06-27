@@ -13,7 +13,7 @@ async function getAllPropositions() {
 
 async function getPropositionById(id) {
   return await knex('propositions').where({ id }).first();
-}
+}   
 
 // Update
 async function updateProposition(id, newAnnonce_id, newUser_id, newMessage, newCreated_at) {
