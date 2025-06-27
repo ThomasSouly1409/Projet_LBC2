@@ -92,10 +92,9 @@ router.delete('/annonces/:id', async (req, res) => {
     return res.status(403).json({ error: "Token invalide" });
   }
 
-  const user_id = tokenDb.user_id
   const { id } = req.params;
 
-  const annonceExist_delete = await annonceModel.deleteAnnonce(id)
+  const annonceExist_delete = await annonceModel.getAnnonceById(id);
   if (!annonceExist_delete) {
     return res.status(404).json({ error: "L'annonce existe pas" });
   }
