@@ -50,8 +50,27 @@ router.post('/annonces', async (req, res) => {
 
 // Mettre à jour une annonce existante
 router.put('/annonces/:id', async (req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(403).json({ error: "Token obligatoire" });
+  }
 
+  const token = req.headers.authorization;
+  const tokenDb = await tokenModel.getTokenById(token)
+  if (!tokenDb) {
+    return res.status(403).json({ error: "Token invalide" });
+  }
+
+  const user_id = tokenDb.user_id
   const { id } = req.params;
+
+  const annonceExist_update = await annonceModel.getAnnonceById(id)
+  if (!annonceExist_update) {
+    return res.status(404).json({ error: "L'annonce existe pas" });
+  }
+  if (annonceExist_update.user_id != tokenDb.user_id) {
+    return res.status(403).json({ error: "Action non autorisée" });
+  } 
+
   const { title, body, status, created_at } = req.body;
   try {
     await annonceModel.updateAnnonce(id, title, body, user_id, status, created_at);
@@ -63,7 +82,27 @@ router.put('/annonces/:id', async (req, res) => {
 
 // Supprimer une annonce
 router.delete('/annonces/:id', async (req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(403).json({ error: "Token obligatoire" });
+  }
+
+  const token = req.headers.authorization;
+  const tokenDb = await tokenModel.getTokenById(token)
+  if (!tokenDb) {
+    return res.status(403).json({ error: "Token invalide" });
+  }
+
+  const user_id = tokenDb.user_id
   const { id } = req.params;
+
+  const annonceExist_delete = await annonceModel.deleteAnnonce(id)
+  if (!annonceExist_delete) {
+    return res.status(404).json({ error: "L'annonce existe pas" });
+  }
+  if (annonceExist_delete.user_id != tokenDb.user_id) {
+    return res.status(403).json({ error: "Action non autorisée" });
+  } 
+
   try {
     await annonceModel.deleteAnnonce(id);
     res.json({ message: 'Annonce supprimé avec succès' });
